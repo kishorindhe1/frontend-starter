@@ -1,7 +1,7 @@
-import AppRoutes from "@/routes";
+import PublicRoutes from "./routes/public-routes";
 
 function App() {
-  return <AppRoutes />;
+  return <PublicRoutes />;
 }
 
 export default App;

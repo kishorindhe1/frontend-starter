@@ -12,7 +12,7 @@ type Props = {
 };
 
 const RegisterForm: React.FC<Props> = ({ onSuccess }) => {
-  const { mutateAsync, isLoading, error } = useRegister();
+  const { mutateAsync, status, error } = useRegister();
 
   const {
     control,
@@ -27,7 +27,7 @@ const RegisterForm: React.FC<Props> = ({ onSuccess }) => {
     try {
       await mutateAsync(data);
       onSuccess?.();
-    } catch (e) {
+    } catch  {
       // handle error / toast
     }
   };
@@ -107,14 +107,14 @@ const RegisterForm: React.FC<Props> = ({ onSuccess }) => {
       />
 
       <AntForm.Item>
-        <Button type="primary" htmlType="submit" loading={isLoading} block>
+        <Button type="primary" htmlType="submit" loading={status === "pending"} block>
           Create account
         </Button>
       </AntForm.Item>
 
       {error && (
         <div style={{ color: "var(--ant-error-color)", marginTop: 8 }}>
-          {(error as any)?.message || "Registration failed"}
+          {error instanceof Error ? error.message : "Registration failed"}
         </div>
       )}
     </AntForm>
