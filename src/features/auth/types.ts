@@ -3,6 +3,10 @@ export type LoginPayload = {
   email: string;
   password: string;
 };
+export type VerifyOtpPayload = {
+  email: string;
+  otp: string;
+};
 
 export type RegisterPayload = {
   name: string;

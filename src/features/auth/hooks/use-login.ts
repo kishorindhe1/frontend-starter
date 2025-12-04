@@ -1,16 +1,23 @@
 // src/features/auth/hooks/use-login.ts
 import { useMutation } from '@tanstack/react-query';
 import { loginRequest } from '@/features/auth/api/auth-api';
-import { useAuthStore } from '@/features/auth/store/use-auth-store';
+// import { useAuthStore } from '@/features/auth/store/use-auth-store';
 import type { LoginPayload } from '@/features/auth/types';
 
+// src/features/auth/hooks/use-login.ts
+import { useQueryClient } from '@tanstack/react-query';
+
 export const useLogin = () => {
-  const setAuth = useAuthStore((s) => s.setAuth);
+  const queryClient = useQueryClient();
 
   return useMutation({
+    mutationKey: ['login-temp-data'],  
     mutationFn: (payload: LoginPayload) => loginRequest(payload),
-    onSuccess: (data) => {
-      setAuth(data.token, data.user);
-    },
+    
+onSuccess: (data) => {
+  queryClient.setQueryData(['login-temp-data'], data);
+
+
+},
   });
 };
