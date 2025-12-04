@@ -23,7 +23,14 @@ export type User = {
 };
 
 export type AuthResponse = {
-  token: string;
-  refreshToken?: string;
-  user: User;
+  success: boolean;
+  status: number;
+  message: string;
+  data: {
+    message: string;
+    requiresOTP: boolean;
+    email: string;
+    otp: string;
+    expiresIn: string;
+  };
 };

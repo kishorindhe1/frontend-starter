@@ -14,7 +14,7 @@ const api: AxiosInstance = client;
 export const loginRequest = async (
   payload: LoginPayload
 ): Promise<AuthResponse> => {
-  const { data } = await api.post("/v1.0/auth/sign-in", payload);
+  const  data :AuthResponse = await api.post("/v1.0/auth/sign-in", payload);
   return data;
 };
 export const verifyOtpRequest = async (

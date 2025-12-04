@@ -27,14 +27,16 @@ const otpSchema = z.object({
 type OtpFormData = z.infer<typeof otpSchema>;
 
 interface TempLoginResponse {
-  success: boolean;
-  status: number;
-  message: string;
   data: {
+    data: {
+      email: string;
+      message: string;
+      requiresOTP: boolean;
+      expiresIn: string;
+    };
+    success: boolean;
+    status: number;
     message: string;
-    requiresOTP: boolean;
-    email: string;
-    expiresIn: string;
   };
 }
 
@@ -58,10 +60,10 @@ const OtpVerificationForm: React.FC<Props> = ({ onSuccess, onResend }) => {
     // staleTime: Infinity,
   });
 
-  const email = tempData?.data?.email || "";
+  const email = tempData?.data?.data?.email || "";
   const [secondsLeft, setSecondsLeft] = React.useState(60);
 
-  React.useEffect(() => {
+ React.useEffect(() => {
     if (secondsLeft <= 0) return;
     const timer = setInterval(() => setSecondsLeft((s) => s - 1), 1000);
     return () => clearInterval(timer);

@@ -28,7 +28,9 @@ const LoginForm: React.FC = () => {
 
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [otpEmail, setOtpEmail] = useState("");
-  const [loginCredentials, setLoginCredentials] = useState<LoginSchema | null>(null);
+  const [loginCredentials, setLoginCredentials] = useState<LoginSchema | null>(
+    null
+  );
 
   const {
     control,
@@ -42,9 +44,9 @@ const LoginForm: React.FC = () => {
   const onSubmit = async (data: LoginSchema) => {
     try {
       const response: any = await login(data);
-
-      if (response?.success || response?.status === 200) {
-        if (response?.requiresOtp || response?.data?.requiresOTP) {
+      console.log("response response:", response.data);
+      if (response?.data.success || response?.data.status === 200) {
+        if (response?.data.data.requiresOtp || response?.data.data?.requiresOTP) {
           // Save credentials for resend
           setLoginCredentials(data);
           setOtpEmail(data.email);
@@ -53,15 +55,12 @@ const LoginForm: React.FC = () => {
           // Direct login success (no OTP)
           navigate("/dashboard");
         }
-      }else {
-
-      }
+      } 
     } catch (err) {
-      // Error shown via Alert below
-      console.error("Login error:", err);
+
     }
   };
-
+  console.log("error error:", error);
   // Resend OTP → call login API again
   const handleResendOtp = async () => {
     if (!loginCredentials) return;
@@ -96,7 +95,11 @@ const LoginForm: React.FC = () => {
 
             <Divider className="login-divider" />
 
-            <AntForm layout="vertical" onFinish={handleSubmit(onSubmit)} size="large">
+            <AntForm
+              layout="vertical"
+              onFinish={handleSubmit(onSubmit)}
+              size="large"
+            >
               <Controller
                 name="email"
                 control={control}
@@ -158,9 +161,9 @@ const LoginForm: React.FC = () => {
                 <Alert
                   message="Login Failed"
                   description={
-                    error instanceof Error
-                      ? error.message
-                      : "Invalid credentials. Please try again."
+                    // Try to get error.response.data.message if available, else fallback
+                    (error as any)?.response?.data?.message ||
+                    (error instanceof Error ? error.message : "Invalid credentials. Please try again.")
                   }
                   type="error"
                   showIcon
