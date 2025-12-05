@@ -16,7 +16,6 @@ import { MailOutlined, LoginOutlined, ReloadOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 // import { useRouter } from "next/navigation"; // or "react-router-dom" if using React Router
 import GradientButton from "@/components/common/GradientButton.tsx";
-import "@/assets/styles/OtpVerificationForm.css"; // External CSS
 
 const { Text, Title } = Typography;
 
