@@ -1,14 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
-import {
-  Alert,
-  Card,
-  Form,
-  Input,
-  Typography,
-  Space,
-  Modal,
-  Button,
-} from "antd";
+import { Card, Form, Input, Typography, Space, Button, message } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/features/auth/schemas/auth-schema";
@@ -22,17 +14,14 @@ import {
   EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import GradientButton from "@/components/common/GradientButton.tsx";
 import OtpVerificationForm from "./otp-verify";
+import Title from "antd/es/typography/Title";
 
 const { Text } = Typography;
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const { mutateAsync: login, isPending, error } = useLogin();
-
-  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
-  const [otpEmail, setOtpEmail] = useState("");
+  const { data, mutateAsync: login, isPending } = useLogin();
   const [loginCredentials, setLoginCredentials] = useState<LoginSchema | null>(
     null
   );
@@ -40,6 +29,7 @@ const LoginForm: React.FC = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -55,34 +45,35 @@ const LoginForm: React.FC = () => {
           response?.data.data?.requiresOTP
         ) {
           setLoginCredentials(data);
-          setOtpEmail(data.email);
-          setIsOtpModalOpen(true);
-        } else {
-          navigate("/dashboard");
         }
       }
-    } catch (err) {}
+    } catch (error: unknown) {
+      reset();
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message ||
+        (error as Error)?.message ||
+        "Invalid credentials. Please try again.";
+
+      message.error(errorMessage);
+    }
   };
 
   const handleResendOtp = async () => {
     if (!loginCredentials) return;
     try {
       await login(loginCredentials);
-    } catch (err) {}
+    } catch (error) {
+      console.error("Resend OTP error:", error);
+    }
   };
 
   const handleOtpSuccess = () => {
-    setIsOtpModalOpen(false);
     navigate("/dashboard");
-  };
-
-  const handleModalClose = () => {
-    setIsOtpModalOpen(false);
   };
 
   return (
     <>
-      {/* ==================== MAIN LOGIN PAGE ==================== */}
       <div
         className="login-page-wrapper"
         style={{
@@ -92,120 +83,99 @@ const LoginForm: React.FC = () => {
           minHeight: "100vh",
         }}
       >
-        {/* <div className="login-logo">
-          <span className="logo-icon">Admin Sign In</span>
-        </div> */}
-
         <Card
           className="login-card"
           style={{ maxWidth: 400, width: "100%", alignItems: "center" }}
         >
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            <div className="login-header">
-              <h2 className="login-title">Sign in</h2>
-              <Text className="login-subtitle">
-                Enter your email and password below to log into your account
+          {data?.data?.data?.requiresOTP ? (
+            <OtpVerificationForm
+              onSuccess={handleOtpSuccess}
+              onResend={handleResendOtp}
+            />
+          ) : (
+            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+              <Title level={3} className="!mb-0">
+                Sign In
+              </Title>
+
+              <Text type="secondary">
+                Enter your email and password to continue.
               </Text>
-            </div>
 
-            <Form
-              layout="vertical"
-              onFinish={handleSubmit(onSubmit)}
-              size="small"
-            >
-              <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <Form.Item
-                    label="Email"
-                    required={true}
-                    validateStatus={errors.email ? "error" : ""}
-                    help={errors.email?.message}
-                  >
-                    <Input
-                      {...field}
-                      prefix={<MailOutlined className="site-form-item-icon" />}
-                      placeholder="Enter your email"
-                      size="large"
-                    />
-                  </Form.Item>
-                )}
-              />
-
-              <Controller
-                name="password"
-                control={control}
-                render={({ field }) => (
-                  <Form.Item
-                    label="Password"
-                    required={true}
-                    validateStatus={errors.password ? "error" : ""}
-                    help={errors.password?.message}
-                  >
-                    <Input.Password
-                      {...field}
-                      prefix={<LockOutlined className="site-form-item-icon" />}
-                      placeholder="••••••••"
-                      size="large"
-                      iconRender={(visible) =>
-                        visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                      }
-                    />
-                  </Form.Item>
-                )}
-              />
-
-              <Form.Item style={{ marginBottom: 0 }}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={isPending}
-                  block
-                  size="large"
-                  icon={<LoginOutlined />}
-                >
-                  {isPending ? "Signing in..." : "Sign in"}
-                </Button>
-              </Form.Item>
-
-              {/* Backend Error */}
-              {error && (
-                <Alert
-                  message="Login Failed"
-                  description={
-                    (error as any)?.response?.data?.message ||
-                    "Invalid credentials. Please try again."
-                  }
-                  type="error"
-                  showIcon
-                  style={{ borderRadius: 12, marginTop: 16 }}
+              <Form
+                layout="vertical"
+                onFinish={handleSubmit(onSubmit)}
+                size="small"
+              >
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <Form.Item
+                      label="Email"
+                      required={true}
+                      validateStatus={errors.email ? "error" : ""}
+                      help={errors.email?.message}
+                    >
+                      <Input
+                        {...field}
+                        prefix={
+                          <MailOutlined className="site-form-item-icon" />
+                        }
+                        placeholder="Enter your email"
+                        size="large"
+                        autoComplete="off"
+                      />
+                    </Form.Item>
+                  )}
                 />
-              )}
-            </Form>
 
-            {/* You can add social logins here later */}
-          </Space>
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <Form.Item
+                      label="Password"
+                      required={true}
+                      validateStatus={errors.password ? "error" : ""}
+                      help={errors.password?.message}
+                    >
+                      <Input.Password
+                        autoComplete="off"
+                        {...field}
+                        prefix={
+                          <LockOutlined className="site-form-item-icon" />
+                        }
+                        placeholder="••••••••"
+                        size="large"
+                        iconRender={(visible) =>
+                          visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                        }
+                      />
+                    </Form.Item>
+                  )}
+                />
+
+                <Form.Item style={{ marginBottom: 0 }}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={isPending}
+                    block
+                    size="large"
+                    className="my-1"
+                    icon={<LoginOutlined />}
+                  >
+                    {isPending ? "Signing in..." : "Sign in"}
+                  </Button>
+                </Form.Item>
+
+                {/* Backend Error */}
+              </Form>
+            </Space>
+          )}
         </Card>
       </div>
-
-      {/* ==================== OTP MODAL ==================== */}
-      <Modal
-        open={isOtpModalOpen}
-        onCancel={handleModalClose}
-        footer={null}
-        width={420}
-        centered
-        closeIcon={null}
-        destroyOnClose
-        maskClosable={false}
-      >
-        <OtpVerificationForm
-          email={otpEmail}
-          onSuccess={handleOtpSuccess}
-          onResend={handleResendOtp}
-        />
-      </Modal>
     </>
   );
 };

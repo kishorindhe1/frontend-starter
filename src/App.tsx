@@ -15,7 +15,7 @@ function App() {
       colorBgContainer: "#0f0f0f", // Slightly lighter containers (cards, modals)
       colorBorder: "#434343",
       colorBorderSecondary: "#333333", // Often used for Card borders specifically
-      borderRadius: 6,
+      borderRadius: 4,
 
       fontFamily:
         "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
@@ -38,9 +38,11 @@ function App() {
         labelColor: "#e0e0e0",
         labelRequiredColor: "#ff4d4f", // red * for required
       },
+      //add hover and focus styles for input
       Button: {
         colorPrimary: "#ffffff",
         colorTextLightSolid: "#020819",
+    
       },
       Input: {
         colorBgContainer: "#020819", // Darker input bg for contrast
@@ -63,8 +65,7 @@ function App() {
       Layout: {
         colorBgLayout: "#020819",
       },
-      // Optional: style GitHub/Facebook buttons
-      // You can further customize if using Ant Design's built-in social buttons
+    
     },
   };
 
@@ -85,6 +86,8 @@ function App() {
       },
       Input: {
         colorBgContainer: "#ffffff",
+         borderRadius: 8,
+        paddingBlock: 10,
       },
       Card: {
         colorBgContainer: "#ffffff",
