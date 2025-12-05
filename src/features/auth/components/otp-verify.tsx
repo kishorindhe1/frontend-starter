@@ -133,7 +133,7 @@ const handlePaste = async (e: React.ClipboardEvent) => {
       // }
 
       queryClient.removeQueries({ queryKey: ["login-temp-data"] });
-      // router.push("/dashboard"); // Redirect to dashboard
+
       onSuccess?.();
     } catch (err) {
       // Error handled below via verifyError

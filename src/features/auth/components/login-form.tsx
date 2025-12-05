@@ -6,7 +6,7 @@ import {
   Input,
   Typography,
   Space,
-  Divider,
+
   Modal,
 } from "antd";
 import { Controller, useForm } from "react-hook-form";
@@ -14,10 +14,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/features/auth/schemas/auth-schema";
 import type { LoginSchema } from "@/features/auth/schemas/auth-schema";
 import { useLogin } from "@/features/auth/hooks/use-login";
-import { LockOutlined, MailOutlined, LoginOutlined } from "@ant-design/icons";
+import { LockOutlined, MailOutlined, LoginOutlined, EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import GradientButton from "@/components/common/GradientButton.tsx";
-import OtpVerificationForm from "./otp-verify"; // adjust path
+import OtpVerificationForm from "./otp-verify";
 import "@/assets/styles/LoginForm.css";
 
 const { Text } = Typography;
@@ -28,9 +28,7 @@ const LoginForm: React.FC = () => {
 
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [otpEmail, setOtpEmail] = useState("");
-  const [loginCredentials, setLoginCredentials] = useState<LoginSchema | null>(
-    null
-  );
+  const [loginCredentials, setLoginCredentials] = useState<LoginSchema | null>(null);
 
   const {
     control,
@@ -44,31 +42,23 @@ const LoginForm: React.FC = () => {
   const onSubmit = async (data: LoginSchema) => {
     try {
       const response: any = await login(data);
-      console.log("response response:", response.data);
       if (response?.data.success || response?.data.status === 200) {
         if (response?.data.data.requiresOtp || response?.data.data?.requiresOTP) {
-          // Save credentials for resend
           setLoginCredentials(data);
           setOtpEmail(data.email);
-          setIsOtpModalOpen(true); // Open modal popup
+          setIsOtpModalOpen(true);
         } else {
-          // Direct login success (no OTP)
           navigate("/dashboard");
         }
-      } 
-    } catch (err) {
-
-    }
+      }
+    } catch (err) {}
   };
-  console.log("error error:", error);
-  // Resend OTP → call login API again
+
   const handleResendOtp = async () => {
     if (!loginCredentials) return;
     try {
-      await login(loginCredentials); // Silent re-call
-    } catch (err) {
-      // Ignore or show toast if needed
-    }
+      await login(loginCredentials);
+    } catch (err) {}
   };
 
   const handleOtpSuccess = () => {
@@ -78,45 +68,41 @@ const LoginForm: React.FC = () => {
 
   const handleModalClose = () => {
     setIsOtpModalOpen(false);
-    // Optional: clear form or keep it
   };
 
   return (
     <>
-      {/* ==================== MAIN LOGIN CARD ==================== */}
-      <div className="login-page-container">
+      {/* ==================== MAIN LOGIN PAGE ==================== */}
+      <div className="login-page-wrapper">
+        {/* <div className="login-logo">
+          <span className="logo-icon">Admin Sign In</span>
+        </div> */}
+
         <Card className="login-card">
-          <Space direction="vertical" size="large" style={{ width: "100%" }}>
+          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
             <div className="login-header">
-              <Text type="secondary" className="login-subtitle">
-                Sign in to continue to your account
+              <h2 className="login-title">Sign in</h2>
+              <Text className="login-subtitle">
+                Enter your email and password below to log into your account
               </Text>
             </div>
 
-            <Divider className="login-divider" />
-
-            <AntForm
-              layout="vertical"
-              onFinish={handleSubmit(onSubmit)}
-              size="large"
-            >
+            <AntForm layout="vertical" onFinish={handleSubmit(onSubmit)} size="large">
               <Controller
                 name="email"
                 control={control}
                 render={({ field }) => (
                   <AntForm.Item
-                    label="Email Address"
+                    label="Email"
                     validateStatus={errors.email ? "error" : ""}
                     help={errors.email?.message}
-                    required
                   >
                     <Input
                       {...field}
-                      prefix={<MailOutlined className="input-icon" />}
+                      prefix={<MailOutlined className="site-form-item-icon" />}
                       placeholder="Enter your email"
-                      autoComplete="email"
-                      allowClear
-                      className="login-input"
+                      className="custom-input"
+                      size="large"
                     />
                   </AntForm.Item>
                 )}
@@ -130,20 +116,27 @@ const LoginForm: React.FC = () => {
                     label="Password"
                     validateStatus={errors.password ? "error" : ""}
                     help={errors.password?.message}
-                    required
+                    extra={
+                      <a href="#" className="forgot-password">
+                        Forgot password?
+                      </a>
+                    }
                   >
                     <Input.Password
                       {...field}
-                      prefix={<LockOutlined className="input-icon" />}
-                      placeholder="Enter your password"
-                      autoComplete="current-password"
-                      className="login-input"
+                      prefix={<LockOutlined className="site-form-item-icon" />}
+                      placeholder="••••••••"
+                      className="custom-input"
+                      size="large"
+                      iconRender={(visible) =>
+                        visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                      }
                     />
                   </AntForm.Item>
                 )}
               />
 
-              <AntForm.Item className="login-submit">
+              <AntForm.Item style={{ marginBottom: 0 }}>
                 <GradientButton
                   type="primary"
                   htmlType="submit"
@@ -151,8 +144,9 @@ const LoginForm: React.FC = () => {
                   block
                   size="large"
                   icon={<LoginOutlined />}
+                  className="signin-btn"
                 >
-                  {isPending ? "Signing in..." : "Sign In"}
+                  {isPending ? "Signing in..." : "Sign in"}
                 </GradientButton>
               </AntForm.Item>
 
@@ -161,29 +155,32 @@ const LoginForm: React.FC = () => {
                 <Alert
                   message="Login Failed"
                   description={
-                    // Try to get error.response.data.message if available, else fallback
                     (error as any)?.response?.data?.message ||
-                    (error instanceof Error ? error.message : "Invalid credentials. Please try again.")
+                    "Invalid credentials. Please try again."
                   }
                   type="error"
                   showIcon
-                  className="login-error-alert"
+                  style={{ borderRadius: 12, marginTop: 16 }}
                 />
               )}
             </AntForm>
+
+           
+
+            {/* You can add social logins here later */}
           </Space>
         </Card>
       </div>
 
-      {/* ==================== OTP MODAL POPUP ==================== */}
+      {/* ==================== OTP MODAL ==================== */}
       <Modal
         open={isOtpModalOpen}
         onCancel={handleModalClose}
         footer={null}
         width={420}
         centered
-        closeIcon={null} // Optional: remove X if you don't want user to close
-        destroyOnClose // Important: clears state when closed
+        closeIcon={null}
+        destroyOnClose
         maskClosable={false}
       >
         <OtpVerificationForm
@@ -192,6 +189,23 @@ const LoginForm: React.FC = () => {
           onResend={handleResendOtp}
         />
       </Modal>
+
+      {/* <Modal
+        open={isOtpModalOpen}
+        onCancel={handleModalClose}
+        footer={null}
+        width={420}
+        centered
+        closeIcon={null}
+        destroyOnClose
+        maskClosable={false}
+      >
+        <OtpVerificationForm
+          email={otpEmail}
+          onSuccess={handleOtpSuccess}
+          onResend={handleResendOtp}
+        />
+      </Modal> */}
     </>
   );
 };
