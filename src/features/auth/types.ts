@@ -4,7 +4,7 @@ export type LoginPayload = {
   password: string;
 };
 export type VerifyOtpPayload = {
-  email: string;
+  sessionToken: string;
   otp: string;
 };
 
@@ -23,6 +23,7 @@ export type User = {
 };
 
 export type AuthResponse = {
+  token(token: any, user: any): unknown;
   success: boolean;
   status: number;
   message: string;

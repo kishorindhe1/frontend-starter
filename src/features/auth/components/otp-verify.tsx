@@ -32,7 +32,10 @@ interface TempLoginResponse {
       email: string;
       message: string;
       requiresOTP: boolean;
+      otp: string;
       expiresIn: string;
+      remainingOTPAttempts: number;
+      sessionToken: string;
     };
     success: boolean;
     status: number;
@@ -60,6 +63,7 @@ const OtpVerificationForm: React.FC<Props> = ({ onSuccess, onResend }) => {
     // staleTime: Infinity,
   });
 
+  const sessionToken = tempData?.data?.data?.sessionToken || "";
   const email = tempData?.data?.data?.email || "";
   const [secondsLeft, setSecondsLeft] = React.useState(60);
 
@@ -123,7 +127,7 @@ const handlePaste = async (e: React.ClipboardEvent) => {
 
   const onSubmit = async (data: OtpFormData) => {
     try {
-      const response = await verifyOtp({ email, otp: data.otp.trim() });
+      const response = await verifyOtp({ sessionToken:sessionToken, otp: data.otp.trim() });
       console.log("OTP verification response:", response);
       // Assuming your verifyOtp returns the full success response with tokens
       // if (response?.data?.accessToken) {

@@ -13,9 +13,9 @@ export const useOtpVerify = () => {
   return useMutation({
     mutationFn: (payload: VerifyOtpPayload) => verifyOtpRequest(payload),
     
-    onSuccess: (data) => {
+    onSuccess: (data:any) => {
       // Ab final token mil gaya → login kar do
-      setAuth(data.token, data.user);
+      setAuth(data.data, data.data.id);
 
       // Cache clear kar do (ab zarurat nahi)
       queryClient.removeQueries({ queryKey: ['login-temp-data'] });
