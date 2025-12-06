@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-type AuthState = {
+type TAuthState = {
   token: string | null;
   user: unknown | null;
   setAuth: (token: string, user: unknown) => void;
@@ -9,7 +9,7 @@ type AuthState = {
   isAuthenticated: () => boolean;
 };
 
-export const useAuthStore = create<AuthState>()(
+export const useAuthStore = create<TAuthState>()(
   persist(
     (set,get) => ({
       token: null,
@@ -27,4 +27,3 @@ export const useAuthStore = create<AuthState>()(
 
 
 
-// Note: get() helper isn't imported here; instead, read via store hooks in components.

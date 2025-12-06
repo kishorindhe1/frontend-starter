@@ -41,7 +41,7 @@ const LoginForm: React.FC = () => {
   const onSubmit = async (data: LoginSchema) => {
     try {
       const response = await login(data);
-      if (response?.data?.data?.requiresOTP) {
+      if (response?.requiresOTP) {
         setLoginCredentials(data);
         setRequiresOtp(true);
       } else {
