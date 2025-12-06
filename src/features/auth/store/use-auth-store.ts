@@ -1,11 +1,10 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { User } from '@/features/auth/types';
 
 type AuthState = {
   token: string | null;
-  user: User | null;
-  setAuth: (token: string, user: User) => void;
+  user: unknown | null;
+  setAuth: (token: string, user: unknown) => void;
   clearAuth: () => void;
   isAuthenticated: () => boolean;
 };
@@ -15,7 +14,7 @@ export const useAuthStore = create<AuthState>()(
     (set,get) => ({
       token: null,
       user: null,
-      setAuth: (token, user) => set({ token, user }),
+      setAuth: (token:string, user: unknown) => set({ token, user }),
       clearAuth: () => set({ token: null, user: null }),
       isAuthenticated: () => !!(get()?.token),
     }),

@@ -82,7 +82,6 @@ export const registerSchema = z
 
 export type RegisterSchema = z.infer<typeof registerSchema>;
 
-// Bonus: Password reset / change password schema
 export const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(1, 'Current password is required'),

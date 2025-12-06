@@ -1,30 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
-import { Card, Form, Input, Typography, Space, Button, message } from "antd";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "@/features/auth/schemas/auth-schema";
-import type { LoginSchema } from "@/features/auth/schemas/auth-schema";
+import FormInput from "@/components/form/form-input";
 import { useLogin } from "@/features/auth/hooks/use-login";
+import type { LoginSchema } from "@/features/auth/schemas/auth-schema";
+import { loginSchema } from "@/features/auth/schemas/auth-schema";
 import {
-  LockOutlined,
-  MailOutlined,
-  LoginOutlined,
-  EyeTwoTone,
   EyeInvisibleOutlined,
+  EyeTwoTone,
+  LockOutlined,
+  LoginOutlined,
+  MailOutlined,
 } from "@ant-design/icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Card, Form, message, Space, Typography } from "antd";
+import Title from "antd/es/typography/Title";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import OtpVerificationForm from "./otp-verify";
-import Title from "antd/es/typography/Title";
 
 const { Text } = Typography;
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const { data, mutateAsync: login, isPending } = useLogin();
+  const { mutateAsync: login, isPending } = useLogin();
   const [loginCredentials, setLoginCredentials] = useState<LoginSchema | null>(
     null
   );
+  const [requiresOtp, setRequiresOtp] = useState(false);
 
   const {
     control,
@@ -38,17 +40,14 @@ const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: LoginSchema) => {
     try {
-      const response: any = await login(data);
-      if (response?.data.success || response?.data.status === 200) {
-        if (
-          response?.data.data.requiresOtp ||
-          response?.data.data?.requiresOTP
-        ) {
-          setLoginCredentials(data);
-        }
+      const response = await login(data);
+      if (response?.data?.data?.requiresOTP) {
+        setLoginCredentials(data);
+        setRequiresOtp(true);
+      } else {
+        navigate("/dashboard");
       }
     } catch (error: unknown) {
-      reset();
       const errorMessage =
         (error as { response?: { data?: { message?: string } } })?.response
           ?.data?.message ||
@@ -56,6 +55,7 @@ const LoginForm: React.FC = () => {
         "Invalid credentials. Please try again.";
 
       message.error(errorMessage);
+      reset({ email: data.email, password: "" });
     }
   };
 
@@ -87,7 +87,7 @@ const LoginForm: React.FC = () => {
           className="login-card"
           style={{ maxWidth: 400, width: "100%", alignItems: "center" }}
         >
-          {data?.data?.data?.requiresOTP ? (
+          {requiresOtp ? (
             <OtpVerificationForm
               onSuccess={handleOtpSuccess}
               onResend={handleResendOtp}
@@ -107,53 +107,28 @@ const LoginForm: React.FC = () => {
                 onFinish={handleSubmit(onSubmit)}
                 size="small"
               >
-                <Controller
-                  name="email"
+                <FormInput
                   control={control}
-                  render={({ field }) => (
-                    <Form.Item
-                      label="Email"
-                      required={true}
-                      validateStatus={errors.email ? "error" : ""}
-                      help={errors.email?.message}
-                    >
-                      <Input
-                        {...field}
-                        prefix={
-                          <MailOutlined className="site-form-item-icon" />
-                        }
-                        placeholder="Enter your email"
-                        size="large"
-                        autoComplete="off"
-                      />
-                    </Form.Item>
-                  )}
+                  name="email"
+                  label="Email"
+                  required
+                  placeholder="Enter your email"
+                  errors={errors}
+                  prefix={<MailOutlined />}
                 />
 
-                <Controller
-                  name="password"
+                <FormInput
                   control={control}
-                  render={({ field }) => (
-                    <Form.Item
-                      label="Password"
-                      required={true}
-                      validateStatus={errors.password ? "error" : ""}
-                      help={errors.password?.message}
-                    >
-                      <Input.Password
-                        autoComplete="off"
-                        {...field}
-                        prefix={
-                          <LockOutlined className="site-form-item-icon" />
-                        }
-                        placeholder="••••••••"
-                        size="large"
-                        iconRender={(visible) =>
-                          visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                        }
-                      />
-                    </Form.Item>
-                  )}
+                  name="password"
+                  label="Password"
+                  required
+                  type="password"
+                  placeholder="••••••••"
+                  errors={errors}
+                  prefix={<LockOutlined />}
+                  suffix={(visible: boolean) =>
+                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  }
                 />
 
                 <Form.Item style={{ marginBottom: 0 }}>
@@ -169,8 +144,6 @@ const LoginForm: React.FC = () => {
                     {isPending ? "Signing in..." : "Sign in"}
                   </Button>
                 </Form.Item>
-
-                {/* Backend Error */}
               </Form>
             </Space>
           )}
