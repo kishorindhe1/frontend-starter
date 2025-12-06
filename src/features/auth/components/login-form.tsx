@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import FormInput from "@/components/form/form-input";
 import { useLogin } from "@/features/auth/hooks/use-login";
-import type { LoginSchema } from "@/features/auth/schemas/auth-schema";
-import { loginSchema } from "@/features/auth/schemas/auth-schema";
+import { loginSchema, type TLoginSchema } from "@/features/auth/schemas/auth-schema";
 import {
   EyeInvisibleOutlined,
   EyeTwoTone,
@@ -23,7 +21,7 @@ const { Text } = Typography;
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const { mutateAsync: login, isPending } = useLogin();
-  const [loginCredentials, setLoginCredentials] = useState<LoginSchema | null>(
+  const [loginCredentials, setLoginCredentials] = useState<TLoginSchema | null>(
     null
   );
   const [requiresOtp, setRequiresOtp] = useState(false);
@@ -33,12 +31,12 @@ const LoginForm: React.FC = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<LoginSchema>({
+  } = useForm<TLoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = async (data: LoginSchema) => {
+  const onSubmit = async (data: TLoginSchema) => {
     try {
       const response = await login(data);
       if (response?.requiresOTP) {

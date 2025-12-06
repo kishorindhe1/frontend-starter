@@ -21,7 +21,7 @@ export const loginSchema = z.object({
     // Note: We don't validate password strength on login for security (avoid leaking rules)
 });
 
-export type LoginSchema = z.infer<typeof loginSchema>;
+export type TLoginSchema = z.infer<typeof loginSchema>;
 
 export const registerSchema = z
   .object({
