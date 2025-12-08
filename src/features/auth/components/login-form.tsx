@@ -5,11 +5,9 @@ import {
   type TLoginSchema,
 } from "@/features/auth/schemas/auth-schema";
 import {
-  EyeInvisibleOutlined,
-  EyeTwoTone,
   LockOutlined,
   LoginOutlined,
-  MailOutlined,
+  MailOutlined
 } from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Card, Form, message, Space, Typography } from "antd";
@@ -87,13 +85,13 @@ const LoginForm: React.FC = () => {
 
   /**
    * Handles the resend OTP action by re-attempting the login process with stored credentials.
-   * 
+   *
    * @remarks
    * This function will only execute if loginCredentials are available.
    * On failure, it displays an error message extracted from the error response or falls back to a generic message.
-   * 
+   *
    * @returns A promise that resolves when the OTP resend attempt completes
-   * 
+   *
    * @throws Will catch and handle errors internally by displaying them via antd message component
    */
   const handleResendOtp = async () => {
@@ -168,9 +166,6 @@ const LoginForm: React.FC = () => {
                   placeholder="••••••••"
                   errors={errors}
                   prefix={<LockOutlined />}
-                  suffix={(visible: boolean) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                  }
                 />
 
                 <Form.Item style={{ marginBottom: 0 }}>
