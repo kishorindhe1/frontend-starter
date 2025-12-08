@@ -4,13 +4,9 @@ import {
   loginSchema,
   type TLoginSchema,
 } from "@/features/auth/schemas/auth-schema";
-import {
-  LockOutlined,
-  LoginOutlined,
-  MailOutlined
-} from "@ant-design/icons";
+import { LockOutlined, LoginOutlined, MailOutlined } from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Card, Form, message, Space, Typography } from "antd";
+import { Button, Card, Flex, Form, message, Space, Typography } from "antd";
 import Title from "antd/es/typography/Title";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -113,80 +109,72 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <>
-      <div
-        className="login-page-wrapper"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <Card
-          className="login-card"
-          style={{ maxWidth: 400, width: "100%", alignItems: "center" }}
-        >
-          {requiresOtp ? (
-            <OtpVerificationForm
-              onSuccess={handleOtpSuccess}
-              onResend={handleResendOtp}
-            />
-          ) : (
-            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-              <Title level={3} className="!mb-0">
-                Sign In
-              </Title>
+    <Flex
+      justify="center"
+      align="center"
+      className="min-h-screen p-4 login-page-wrapper"
+    >
+      {" "}
+      <Card className="max-w-[400px] w-full flex flex-col items-center p-6 md:p-3">
+        {requiresOtp ? (
+          <OtpVerificationForm
+            onSuccess={handleOtpSuccess}
+            onResend={handleResendOtp}
+          />
+        ) : (
+          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+            <Title level={3} className="!mb-0">
+              Sign In
+            </Title>
 
-              <Text type="secondary">
-                Enter your email and password to continue.
-              </Text>
+            <Text type="secondary">
+              Enter your email and password to continue.
+            </Text>
 
-              <Form
-                layout="vertical"
-                onFinish={handleSubmit(onSubmit)}
-                size="small"
-              >
-                <FormInput
-                  control={control}
-                  name="email"
-                  label="Email"
-                  required
-                  placeholder="Enter your email"
-                  errors={errors}
-                  prefix={<MailOutlined />}
-                />
+            <Form
+              layout="vertical"
+              onFinish={handleSubmit(onSubmit)}
+              size="small"
+            >
+              <FormInput
+                control={control}
+                name="email"
+                label="Email"
+                required
+                placeholder="Enter your email"
+                errors={errors}
+                prefix={<MailOutlined />}
+              />
 
-                <FormInput
-                  control={control}
-                  name="password"
-                  label="Password"
-                  required
-                  type="password"
-                  placeholder="••••••••"
-                  errors={errors}
-                  prefix={<LockOutlined />}
-                />
+              <FormInput
+                control={control}
+                name="password"
+                label="Password"
+                required
+                type="password"
+                placeholder="••••••••"
+                errors={errors}
+                prefix={<LockOutlined />}
+              />
 
-                <Form.Item style={{ marginBottom: 0 }}>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={isPending}
-                    block
-                    size="large"
-                    className="my-1"
-                    icon={<LoginOutlined />}
-                  >
-                    {isPending ? "Signing in..." : "Sign in"}
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Space>
-          )}
-        </Card>
-      </div>
-    </>
+              <Form.Item style={{ marginBottom: 0 }}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={isPending}
+                  block
+                  size="large"
+                  className="my-1"
+                  icon={<LoginOutlined />}
+                >
+                  {isPending ? "Signing in..." : "Sign in"}
+                </Button>
+              </Form.Item>
+            </Form>
+          </Space>
+        )}
+      </Card>
+    </Flex>
   );
 };
 
