@@ -1,25 +1,26 @@
-// src/features/auth/types.ts
-export type LoginPayload = {
+export type TLoginPayload = {
   email: string;
   password: string;
 };
-
-export type RegisterPayload = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword?: string;
+export type TVerifyOtpPayload = {
+  sessionToken: string;
+  otp: string;
 };
 
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  // add extra user fields as needed
-};
-
-export type AuthResponse = {
+export type TLoginOtpResponse = {
   token: string;
-  refreshToken?: string;
-  user: User;
+  id(token: string, id: string): unknown;
+  requiresOTP: true;
+  email: string;
+  message: string;
+  expiresIn: string;
 };
+
+export type TLoginResponse = {
+  requiresOTP?: boolean;
+  token: string;
+  email: string;
+  sessionToken?: string;
+  message: string;
+  expiresIn: string;
+  };

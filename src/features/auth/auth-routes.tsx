@@ -1,12 +1,8 @@
-import { LoginForm, RegisterForm } from "@/features/auth";
+import LoginPage from "./pages/login-page";
 
 export const authRoutes = [
   {
     path: "/",
-    element: <LoginForm />,
-  },
-  {
-    path: "/register",
-    element: <RegisterForm />,
+    element: <LoginPage />,
   },
 ];
