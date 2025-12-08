@@ -109,20 +109,15 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <Flex
-      justify="center"
-      align="center"
-      className="min-h-screen p-4 login-page-wrapper"
-    >
-      {" "}
-      <Card className="max-w-[400px] w-full flex flex-col items-center p-6 md:p-3">
+    <Flex justify="center" align="center" className="min-h-screen ">
+      <Card className="max-w-[400px] w-full flex flex-col items-center ">
         {requiresOtp ? (
           <OtpVerificationForm
             onSuccess={handleOtpSuccess}
             onResend={handleResendOtp}
           />
         ) : (
-          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Space direction="vertical" size="middle">
             <Title level={3} className="!mb-0">
               Sign In
             </Title>

@@ -2,7 +2,7 @@ import { useOtpVerify } from "@/features/auth/hooks/use-verify-otp";
 import { LoginOutlined, MailOutlined, ReloadOutlined } from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Form, Input, message, Space, Typography } from "antd";
+import { Button, Flex, Form, Input, message, Space, Typography } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { otpSchema, type OtpFormData } from "../schemas/auth-schema";
@@ -87,7 +87,7 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
   const inputs = Array.from({ length: 6 });
 
   return (
-    <div className="max-w-md w-full mx-auto p-6">
+    <Flex className="max-w-md w-full mx-auto p-6">
       <Space direction="vertical" size="large" className="w-full">
         {/* Header */}
         <div className="text-center">
@@ -209,7 +209,7 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
           </Form.Item>
         </Form>
       </Space>
-    </div>
+    </Flex>
   );
 };
 
