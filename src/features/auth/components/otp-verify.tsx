@@ -5,16 +5,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Form, Input, message, Space, Typography } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
+import { otpSchema, type OtpFormData } from "../schemas/auth-schema";
 import type { TLoginResponse } from "../types";
 
 const { Title, Text } = Typography;
 
-const otpSchema = z.object({
-  otp: z.string().length(6, "Please enter all 6 digits"),
-});
-
-type OtpFormData = z.infer<typeof otpSchema>;
 
 type Props = {
   onSuccess: () => void;

@@ -102,3 +102,9 @@ export const changePasswordSchema = z
   });
 
 export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>;
+const otpSchema = z.object({
+  otp: z.string().length(6, "Please enter all 6 digits"),
+});
+
+type OtpFormData = z.infer<typeof otpSchema>;
+export { otpSchema, type OtpFormData };
