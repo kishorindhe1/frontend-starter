@@ -111,7 +111,7 @@ const LoginForm: React.FC = () => {
   return (
     <Flex justify="center" align="center" className="min-h-screen ">
       <Card className="max-w-[400px] w-full flex flex-col items-center ">
-        {!requiresOtp ? (
+        {requiresOtp ? (
           <OtpVerificationForm
             onSuccess={handleOtpSuccess}
             onResend={handleResendOtp}
