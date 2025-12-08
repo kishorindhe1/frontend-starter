@@ -1,5 +1,5 @@
 // components
-export { default as LoginForm } from "./components/login-form";
+export { default as LoginPage } from "./pages/login-page";
 
 // hooks
 export * from "./hooks/use-login";
