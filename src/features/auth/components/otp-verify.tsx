@@ -119,7 +119,7 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
               >
-                <div
+                <Flex
                   className="flex gap-3 justify-center"
                   onPaste={handlePaste}
                 >
@@ -163,7 +163,7 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
                       autoComplete="off"
                     />
                   ))}
-                </div>
+                </Flex>
               </Form.Item>
             )}
           />
