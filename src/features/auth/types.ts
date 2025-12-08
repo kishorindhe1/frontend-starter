@@ -19,13 +19,8 @@ export type TLoginOtpResponse = {
 export type TLoginResponse = {
   requiresOTP?: boolean;
   token: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    avatar?: string | null;
-    emailVerified: boolean;
-    createdAt: string;
+  email: string;
+  sessionToken?: string;
+  message: string;
+  expiresIn: string;
   };
-};
-

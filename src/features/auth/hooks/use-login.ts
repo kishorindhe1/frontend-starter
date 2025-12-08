@@ -44,7 +44,7 @@ export const useLogin = () => {
     mutationFn: (payload) => loginRequest(payload) as Promise<ApiResponse<TLoginResponse>>,
 
     onSuccess: (data) => {
-      queryClient.setQueryData(["login-temp-data"], data);
+      queryClient.setQueryData(["login-temp-data"], data.data);
     },
   });
 };

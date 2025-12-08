@@ -6,6 +6,7 @@ import { Button, Form, Input, message, Space, Typography } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import type { TLoginResponse } from "../types";
 
 const { Title, Text } = Typography;
 
@@ -14,16 +15,6 @@ const otpSchema = z.object({
 });
 
 type OtpFormData = z.infer<typeof otpSchema>;
-
-interface TempLoginResponse {
-  data: {
-    data: {
-      email: string;
-      sessionToken: string;
-      remainingOTPAttempts: number;
-    };
-  };
-}
 
 type Props = {
   onSuccess: () => void;
@@ -34,12 +25,12 @@ const OtpVerificationForm: React.FC<Props> = ({ onSuccess, onResend }) => {
   const queryClient = useQueryClient();
   const { mutateAsync: verifyOtp, isPending: verifying } = useOtpVerify();
 
-  const { data: tempData } = useQuery<TempLoginResponse>({
+  const { data: userData } = useQuery<TLoginResponse>({
     queryKey: ["login-temp-data"],
   });
 
-  const email = tempData?.data?.data?.email || "your email";
-  const sessionToken = tempData?.data?.data?.sessionToken || "";
+  const email = userData?.email || "your email";
+  const sessionToken = userData?.sessionToken || "";
 
   const [secondsLeft, setSecondsLeft] = React.useState(60);
 
