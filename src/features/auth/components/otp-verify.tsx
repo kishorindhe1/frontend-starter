@@ -11,12 +11,12 @@ import type { TLoginResponse } from "../types";
 const { Title, Text } = Typography;
 
 
-type Props = {
+type TProps = {
   onSuccess: () => void;
   onResend: () => Promise<void>;
 };
 
-const OtpVerificationForm: React.FC<Props> = ({ onSuccess, onResend }) => {
+const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
   const queryClient = useQueryClient();
   const { mutateAsync: verifyOtp, isPending: verifying } = useOtpVerify();
 
