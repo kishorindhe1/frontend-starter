@@ -23,6 +23,8 @@ function ThemeToggle() {
 
 function App() {
   const { isDark } = useThemeStore();
+  console.log("App render with isDark:", isDark);
+  console.log("Current theme in document:", lightTheme);
 
   return (
     <ConfigProvider theme={isDark ? darkTheme : lightTheme}>

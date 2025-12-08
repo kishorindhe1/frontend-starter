@@ -1,22 +1,31 @@
+// store/themeStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type TTheme = "dark" | "light" | "system";
+type Theme = "dark" | "light" | "system";
 
-interface IThemeState {
-  theme: TTheme;
+interface ThemeState {
+  theme: Theme;
   isDark: boolean;
-  setTheme: (theme:TTheme) => void;
-  toggle: () => void;
+  setTheme: (theme: Theme) => void;
 }
 
-export const useThemeStore = create<IThemeState>()(
-  persist(
-    (set, get) => ({
-      theme: "system" as TTheme, // default
-      isDark: window.matchMedia("(prefers-color-scheme: dark)").matches,
+const applyThemeToHtml = (isDark: boolean) => {
+  document.documentElement.dataset.theme = isDark ? "dark" : "light";
+  document.documentElement.classList.toggle("dark", isDark);
+  document.documentElement.classList.toggle("light", !isDark);
+};
 
-      setTheme: (theme) => {
+export const useThemeStore = create<ThemeState>()(
+  persist(
+    (set) => ({
+      theme: "system",
+      isDark:
+        typeof window !== "undefined"
+          ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          : false,
+
+      setTheme: (theme: Theme) => {
         const isDark =
           theme === "dark"
             ? true
@@ -25,34 +34,15 @@ export const useThemeStore = create<IThemeState>()(
             : window.matchMedia("(prefers-color-scheme: dark)").matches;
 
         set({ theme, isDark });
-        document.documentElement.dataset.theme = isDark ? "dark" : "light";
-      },
-
-      toggle: () => {
-        const current = get().theme;
-        const next = current === "dark" ? "light" : "dark";
-        get().setTheme(next);
+        applyThemeToHtml(isDark); // Apply instantly
       },
     }),
     {
-      name: "theme-preference", // localStorage key
+      name: "theme-preference",
+      onRehydrateStorage: () => (state) => {
+        // This runs after hydration — re-apply just in case
+        if (state) applyThemeToHtml(state.isDark);
+      },
     }
   )
 );
-
-// Auto-sync with system changes when user hasn't manually chosen
-if (typeof window !== "undefined") {
-  const media = window.matchMedia("(prefers-color-scheme: dark)");
-  media.addEventListener("change", () => {
-    const { theme } = useThemeStore.getState();
-    if (theme === "system") {
-      useThemeStore.getState().setTheme("system");
-    }
-  });
-
-  // Initial sync
-  const { theme } = useThemeStore.getState();
-  if (theme === "system") {
-    useThemeStore.getState().setTheme("system");
-  }
-}
