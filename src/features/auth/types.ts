@@ -17,7 +17,7 @@ export type TLoginOtpResponse = {
 };
 
 export type TLoginResponse = {
-  requiresOTP: false;
+  requiresOTP?: boolean;
   token: string;
   user: {
     id: string;

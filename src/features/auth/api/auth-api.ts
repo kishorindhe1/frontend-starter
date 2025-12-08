@@ -1,10 +1,10 @@
 import { api } from "@/lib/api";
 
 import type {
-      TLoginPayload,
   TLoginOtpResponse,
+  TLoginPayload,
   TLoginResponse,
-  TVerifyOtpPayload
+  TVerifyOtpPayload,
 } from "@/features/auth/types";
 
 /**
@@ -43,4 +43,3 @@ export const loginRequest = (payload: TLoginPayload) =>
  */
 export const verifyOtpRequest = (payload: TVerifyOtpPayload) =>
   api.post<TLoginOtpResponse>("/auth/verify-otp", payload);
-

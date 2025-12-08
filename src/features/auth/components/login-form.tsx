@@ -1,6 +1,9 @@
 import FormInput from "@/components/form/form-input";
 import { useLogin } from "@/features/auth/hooks/use-login";
-import { loginSchema, type TLoginSchema } from "@/features/auth/schemas/auth-schema";
+import {
+  loginSchema,
+  type TLoginSchema,
+} from "@/features/auth/schemas/auth-schema";
 import {
   EyeInvisibleOutlined,
   EyeTwoTone,
@@ -36,14 +39,31 @@ const LoginForm: React.FC = () => {
     defaultValues: { email: "", password: "" },
   });
 
+  /**
+   * Handles the login form submission.
+   *
+   * @param data - The login credentials containing email and password
+   *
+   * @remarks
+   * This function performs the following actions:
+   * - Attempts to authenticate the user with provided credentials
+   * - If OTP is required, stores login credentials and displays OTP screen
+   * - On success with OTP requirement, shows success message
+   * - On error, displays appropriate error message
+   * - Resets password field on 401/403 errors (authentication failures)
+   * - Preserves both email and password on other errors
+   *
+   * @throws Will catch and handle any errors during the login process
+   */
   const onSubmit = async (data: TLoginSchema) => {
     try {
-      const response = await login(data);
-      if (response?.requiresOTP) {
+      const responses = await login(data);
+      if (responses?.data?.requiresOTP) {
         setLoginCredentials(data);
         setRequiresOtp(true);
-      } else {
-        navigate("/dashboard");
+        message.success(
+          responses.message || "OTP sent to your registered email."
+        );
       }
     } catch (error: unknown) {
       const errorMessage =
@@ -53,16 +73,40 @@ const LoginForm: React.FC = () => {
         "Invalid credentials. Please try again.";
 
       message.error(errorMessage);
-      reset({ email: data.email, password: "" });
+      if (
+        (error as { response?: { status?: number } }).response?.status ===
+          401 ||
+        (error as { response?: { status?: number } }).response?.status === 403
+      ) {
+        reset({ email: data.email, password: "" });
+      } else {
+        reset({ email: data.email, password: data.password });
+      }
     }
   };
 
+  /**
+   * Handles the resend OTP action by re-attempting the login process with stored credentials.
+   * 
+   * @remarks
+   * This function will only execute if loginCredentials are available.
+   * On failure, it displays an error message extracted from the error response or falls back to a generic message.
+   * 
+   * @returns A promise that resolves when the OTP resend attempt completes
+   * 
+   * @throws Will catch and handle errors internally by displaying them via antd message component
+   */
   const handleResendOtp = async () => {
     if (!loginCredentials) return;
     try {
       await login(loginCredentials);
     } catch (error) {
-      console.error("Resend OTP error:", error);
+      message.error(
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message ||
+          (error as Error)?.message ||
+          "Failed to resend OTP. Please try again."
+      );
     }
   };
 
