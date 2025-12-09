@@ -1,15 +1,14 @@
-import { useOtpVerify } from "@/features/auth/hooks/use-verify-otp";
-import { LoginOutlined, MailOutlined, ReloadOutlined } from "@ant-design/icons";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Flex, Form, Input, message, Space, Typography } from "antd";
-import React, { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { otpSchema, type OtpFormData } from "../schemas/auth-schema";
-import type { TLoginResponse } from "../types";
+import { useOtpVerify } from '@/features/auth/hooks/use-verify-otp';
+import { LoginOutlined, MailOutlined, ReloadOutlined } from '@ant-design/icons';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Button, Flex, Form, Input, message, Space, Typography } from 'antd';
+import React, { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { otpSchema, type TOtpFormData } from '../schemas/auth-schema';
+import type { TLoginResponse } from '../types';
 
 const { Title, Text } = Typography;
-
 
 type TProps = {
   onSuccess: () => void;
@@ -21,11 +20,11 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
   const { mutateAsync: verifyOtp, isPending: verifying } = useOtpVerify();
 
   const { data: userData } = useQuery<TLoginResponse>({
-    queryKey: ["login-temp-data"],
+    queryKey: ['login-temp-data'],
   });
 
-  const email = userData?.email || "your email";
-  const sessionToken = userData?.sessionToken || "";
+  const email = userData?.email || 'your email';
+  const sessionToken = userData?.sessionToken || '';
 
   const [secondsLeft, setSecondsLeft] = React.useState(60);
 
@@ -37,40 +36,40 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
     trigger,
     reset,
     formState: { errors, isValid },
-  } = useForm<OtpFormData>({
+  } = useForm<TOtpFormData>({
     resolver: zodResolver(otpSchema),
-    mode: "onChange",
-    defaultValues: { otp: "" },
+    mode: 'onChange',
+    defaultValues: { otp: '' },
   });
 
   useEffect(() => {
     if (secondsLeft <= 0) return;
     const timer = setInterval(() => {
-      setSecondsLeft((prev) => prev - 1);
+      setSecondsLeft(prev => prev - 1);
     }, 1000);
     return () => clearInterval(timer);
   }, [secondsLeft]);
 
   useEffect(() => {
-    setTimeout(() => setFocus("otp"), 100);
+    setTimeout(() => setFocus('otp'), 100);
   }, [setFocus]);
 
   const handlePaste = async (e: React.ClipboardEvent) => {
     e.preventDefault();
     const paste = e.clipboardData
-      .getData("text")
-      .replace(/\D/g, "")
+      .getData('text')
+      .replace(/\D/g, '')
       .slice(0, 6);
     if (paste) {
-      setValue("otp", paste, { shouldValidate: true });
-      await trigger("otp");
+      setValue('otp', paste, { shouldValidate: true });
+      await trigger('otp');
     }
   };
 
-  const onSubmit = async (data: OtpFormData) => {
+  const onSubmit = async (data: TOtpFormData) => {
     try {
       await verifyOtp({ sessionToken, otp: data.otp.trim() });
-      queryClient.removeQueries({ queryKey: ["login-temp-data"] });
+      queryClient.removeQueries({ queryKey: ['login-temp-data'] });
       onSuccess();
     } catch (err: unknown) {
       reset();
@@ -78,7 +77,7 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
         (err as { response?: { data?: { message?: string } } })?.response?.data
           ?.message ||
         (err as Error)?.message ||
-        "The code is invalid or expired. Please try again.";
+        'The code is invalid or expired. Please try again.';
 
       message.error(errorMessage);
     }
@@ -109,10 +108,10 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
           <Controller
             name="otp"
             control={control}
-            render={({ field: { onChange, value = "" } }) => (
+            render={({ field: { onChange, value = '' } }) => (
               <Form.Item
                 label="Enter verification code"
-                validateStatus={errors.otp ? "error" : ""}
+                validateStatus={errors.otp ? 'error' : ''}
                 help={errors.otp?.message}
                 required
                 className="mb-6"
@@ -129,9 +128,9 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
                       type="text"
                       inputMode="numeric"
                       maxLength={1}
-                      value={value[index] || ""}
-                      onChange={(e) => {
-                        const digit = e.target.value.replace(/\D/g, "");
+                      value={value[index] || ''}
+                      onChange={e => {
+                        const digit = e.target.value.replace(/\D/g, '');
                         if (!digit) return;
 
                         const newValue = (value + digit).slice(0, 6);
@@ -144,8 +143,8 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
                           next?.focus();
                         }
                       }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Backspace") {
+                      onKeyDown={e => {
+                        if (e.key === 'Backspace') {
                           if (value[index]) {
                             onChange(
                               value.slice(0, index) + value.slice(index + 1)
@@ -158,7 +157,7 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
                           }
                         }
                       }}
-                      onFocus={(e) => e.target.select()}
+                      onFocus={e => e.target.select()}
                       data-index={index}
                       autoComplete="off"
                     />
@@ -172,9 +171,9 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
           <div className="text-center mb-6">
             {secondsLeft > 0 ? (
               <Text type="secondary">
-                Resend code in{" "}
+                Resend code in{' '}
                 <Text strong className="text-blue-600">
-                  00:{secondsLeft.toString().padStart(2, "0")}
+                  00:{secondsLeft.toString().padStart(2, '0')}
                 </Text>
               </Text>
             ) : (
@@ -204,7 +203,7 @@ const OtpVerificationForm: React.FC<TProps> = ({ onSuccess, onResend }) => {
               icon={<LoginOutlined />}
               className="h-12 text-base font-semibold"
             >
-              {verifying ? "Verifying..." : "Verify & Continue"}
+              {verifying ? 'Verifying...' : 'Verify & Continue'}
             </Button>
           </Form.Item>
         </Form>

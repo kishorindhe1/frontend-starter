@@ -47,6 +47,12 @@ const darkTheme: ThemeConfig = {
       borderRadius: 16,
       boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
     },
+    Menu: {
+      itemColor: '#ffffff',
+      itemHoverColor: '#7592ff',
+      itemSelectedColor: '#ffffff',
+      itemSelectedBg: '#465fff',
+    },
     Layout: {
       colorBgLayout: '#020819',
     },

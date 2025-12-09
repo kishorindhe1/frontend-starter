@@ -36,6 +36,7 @@
     "axios": "^1.13.2",
     "eslint-plugin-unused-imports": "^4.3.0",
     "lint-staged": "^16.2.7",
+    "lucide-react": "^0.556.0",
     "nuqs": "^2.8.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
