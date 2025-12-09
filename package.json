@@ -7,16 +7,28 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "test": "vitest",
+    "postinstall": "npx simple-git-hooks",
+    "hooks:update": "npx simple-git-hooks",
+    "format:check": "prettier --check ."
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,css,md}": "prettier --write --ignore-unknown"
   },
   "dependencies": {
-    "@ant-design/pro-components": "^2.8.10",
     "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/vite": "^4.1.17",
     "@tanstack/react-query": "^5.90.11",
     "@tanstack/react-query-devtools": "^5.91.1",
     "antd": "^6.0.0",
     "axios": "^1.13.2",
+    "eslint-plugin-unused-imports": "^4.3.0",
     "nuqs": "^2.8.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
