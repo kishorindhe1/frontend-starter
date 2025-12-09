@@ -1,3 +1,4 @@
+// components/Sidebar.tsx
 import {
   AppWindow,
   BarChart3,
@@ -15,23 +16,15 @@ import {
   Users,
 } from 'lucide-react';
 import React from 'react';
-
 import { Badge, Layout, Menu } from 'antd';
+import { useLayoutStore } from '@/store';
 
 const { Sider } = Layout;
 
-interface ISidebarProps {
-  collapsed: boolean;
-  onCollapse: (collapsed: boolean) => void;
-  selectedKey: string;
-  onMenuClick: (key: string) => void;
-}
+const Sidebar: React.FC = () => {
+  const { sidebarCollapsed, selectedMenuKey, setSelectedMenuKey } =
+    useLayoutStore();
 
-const Sidebar: React.FC<ISidebarProps> = ({
-  collapsed,
-  selectedKey,
-  onMenuClick,
-}) => {
   const items = [
     {
       key: 'dashboard',
@@ -113,7 +106,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
   ];
 
   return (
-    <Sider trigger={null} collapsible collapsed={collapsed} width={260}>
+    <Sider trigger={null} collapsible collapsed={sidebarCollapsed} width={260}>
       <div
         style={{
           height: 64,
@@ -124,18 +117,22 @@ const Sidebar: React.FC<ISidebarProps> = ({
         }}
       >
         <h2
-          style={{ margin: 0, fontWeight: 700, fontSize: collapsed ? 18 : 22 }}
+          style={{
+            margin: 0,
+            fontWeight: 700,
+            fontSize: sidebarCollapsed ? 18 : 22,
+          }}
         >
-          {collapsed ? 'RE' : 'Refurbedge'}
+          {sidebarCollapsed ? 'RE' : 'Refurbedge'}
         </h2>
       </div>
 
       <Menu
         mode="inline"
-        selectedKeys={[selectedKey]}
+        selectedKeys={[selectedMenuKey]}
         defaultOpenKeys={['ai', 'ecommerce-sub']}
         items={items}
-        onClick={({ key }) => onMenuClick(key)}
+        onClick={({ key }) => setSelectedMenuKey(key)}
         style={{ borderRight: 0, background: 'transparent' }}
       />
     </Sider>

@@ -5,25 +5,22 @@ import {
   Button,
   Dropdown,
   Input,
-  Layout,
   Space,
   Typography,
+  Layout,
   type MenuProps,
 } from 'antd';
 import { Bell, Menu as MenuIcon, PanelLeftClose, Search } from 'lucide-react';
 import React from 'react';
 import ThemeToggle from '../common/theme-toggle';
+import { useLayoutStore } from '@/store';
 
 const { Header } = Layout;
 const { Text } = Typography;
 
-interface INavbarProps {
-  collapsed: boolean;
-  onCollapse: (collapsed: boolean) => void;
-}
+const Navbar: React.FC = () => {
+  const { sidebarCollapsed, toggleSidebar } = useLayoutStore();
 
-const Navbar: React.FC<INavbarProps> = ({ collapsed, onCollapse }) => {
-  // Ant Design v5+ uses `items` directly in Dropdown via `menu` prop
   const menuItems: MenuProps['items'] = [
     { key: 'profile', label: 'Your Profile' },
     { key: 'settings', label: 'Settings' },
@@ -32,15 +29,19 @@ const Navbar: React.FC<INavbarProps> = ({ collapsed, onCollapse }) => {
   ];
 
   return (
-    <Header className="sticky top-0 z-10 flex items-center justify-between px-6 h-16   shadow-sm">
+    <Header className="sticky top-0 z-10 flex items-center justify-between px-6 h-16 shadow-sm">
       {/* Left Section */}
       <div className="flex items-center gap-4">
         <Button
           type="text"
           icon={
-            collapsed ? <MenuIcon size={22} /> : <PanelLeftClose size={22} />
+            sidebarCollapsed ? (
+              <MenuIcon size={22} />
+            ) : (
+              <PanelLeftClose size={22} />
+            )
           }
-          onClick={() => onCollapse(!collapsed)}
+          onClick={toggleSidebar}
           className="w-16 h-16 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors"
         />
 
@@ -57,7 +58,6 @@ const Navbar: React.FC<INavbarProps> = ({ collapsed, onCollapse }) => {
 
       {/* Right Section */}
       <Space size={16} className="flex items-center">
-        {/* Notifications */}
         <Badge count={8} size="small">
           <Button
             type="text"
@@ -67,9 +67,8 @@ const Navbar: React.FC<INavbarProps> = ({ collapsed, onCollapse }) => {
           />
         </Badge>
 
-        {/* Theme Toggle */}
         <ThemeToggle />
-        {/* User Dropdown - AntD v5+ Syntax */}
+
         <Dropdown
           menu={{ items: menuItems }}
           trigger={['click']}
