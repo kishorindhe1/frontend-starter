@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import OtpVerificationForm from './otp-verify';
 
-const { Text } = Typography;
+const { Text, Link } = Typography;
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
@@ -33,22 +33,6 @@ const LoginForm: React.FC = () => {
     defaultValues: { email: '', password: '' },
   });
 
-  /**
-   * Handles the login form submission.
-   *
-   * @param data - The login credentials containing email and password
-   *
-   * @remarks
-   * This function performs the following actions:
-   * - Attempts to authenticate the user with provided credentials
-   * - If OTP is required, stores login credentials and displays OTP screen
-   * - On success with OTP requirement, shows success message
-   * - On error, displays appropriate error message
-   * - Resets password field on 401/403 errors (authentication failures)
-   * - Preserves both email and password on other errors
-   *
-   * @throws Will catch and handle any errors during the login process
-   */
   const onSubmit = async (data: TLoginSchema) => {
     try {
       const responses = await login(data);
@@ -65,8 +49,8 @@ const LoginForm: React.FC = () => {
           ?.data?.message ||
         (error as Error)?.message ||
         'Invalid credentials. Please try again.';
-
       message.error(errorMessage);
+
       if (
         (error as { response?: { status?: number } }).response?.status ===
           401 ||
@@ -79,17 +63,6 @@ const LoginForm: React.FC = () => {
     }
   };
 
-  /**
-   * Handles the resend OTP action by re-attempting the login process with stored credentials.
-   *
-   * @remarks
-   * This function will only execute if loginCredentials are available.
-   * On failure, it displays an error message extracted from the error response or falls back to a generic message.
-   *
-   * @returns A promise that resolves when the OTP resend attempt completes
-   *
-   * @throws Will catch and handle errors internally by displaying them via antd message component
-   */
   const handleResendOtp = async () => {
     if (!loginCredentials) return;
     try {
@@ -108,6 +81,10 @@ const LoginForm: React.FC = () => {
     navigate('/dashboard');
   };
 
+  const handleResetPassword = () => {
+    navigate('/reset-password'); // Redirect to a reset password page
+  };
+
   return (
     <Flex justify="center" align="center" className="min-h-screen ">
       <Card className="max-w-[400px] w-full flex flex-col items-center ">
@@ -117,7 +94,7 @@ const LoginForm: React.FC = () => {
             onResend={handleResendOtp}
           />
         ) : (
-          <Space orientation="vertical" size="middle">
+          <Space orientation="vertical" size="middle" className="w-full">
             <Title level={3} className="!mb-0">
               Sign In
             </Title>
@@ -165,7 +142,23 @@ const LoginForm: React.FC = () => {
                   {isPending ? 'Signing in...' : 'Sign in'}
                 </Button>
               </Form.Item>
+
+              <Text className="block mt-2 text-left">
+                <Link onClick={handleResetPassword}>Forgot Password?</Link>
+              </Text>
             </Form>
+
+            <Text type="secondary" className="text-center mt-4">
+              By signing in, you agree to our{' '}
+              <Link href="/privacy-policy" target="_blank">
+                Privacy Policy
+              </Link>{' '}
+              and{' '}
+              <Link href="/terms-of-service" target="_blank">
+                Terms of Service
+              </Link>
+              .
+            </Text>
           </Space>
         )}
       </Card>
