@@ -1,21 +1,21 @@
-import { StyleProvider } from "@ant-design/cssinjs";
-import { Button, ConfigProvider } from "antd";
-import { Suspense } from "react";
-import { PublicRoutes } from "@/routes";
-import { darkTheme, lightTheme } from "@/theme";
-import { useThemeStore } from "@/store";
+import { StyleProvider } from '@ant-design/cssinjs';
+import { Button, ConfigProvider } from 'antd';
+import { Suspense } from 'react';
+import { PublicRoutes } from '@/routes';
+import { darkTheme, lightTheme } from '@/theme';
+import { useThemeStore } from '@/store';
 
 function ThemeToggle() {
   const { isDark, theme, setTheme } = useThemeStore();
 
   return (
-    <div style={{ position: "absolute", top: 24, right: 24, zIndex: 10 }}>
+    <div style={{ position: 'absolute', top: 24, right: 24, zIndex: 10 }}>
       <Button
         type="text"
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        style={{ color: isDark ? "#aaa" : "#666" }}
+        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        style={{ color: isDark ? '#aaa' : '#666' }}
       >
-        {isDark ? "Light" : "Dark"}
+        {isDark ? 'Light' : 'Dark'}
       </Button>
     </div>
   );
@@ -23,9 +23,6 @@ function ThemeToggle() {
 
 function App() {
   const { isDark } = useThemeStore();
-  console.log("App render with isDark:", isDark);
-  console.log("Current theme in document:", lightTheme);
-
   return (
     <ConfigProvider theme={isDark ? darkTheme : lightTheme}>
       <StyleProvider hashPriority="high">

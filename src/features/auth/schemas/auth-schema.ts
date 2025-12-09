@@ -18,7 +18,7 @@ export const loginSchema = z.object({
   password: z
     .string({ message: 'Password is required' })
     .min(1, 'Password is required'),
-    // Note: We don't validate password strength on login for security (avoid leaking rules)
+  // Note: We don't validate password strength on login for security (avoid leaking rules)
 });
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
@@ -30,8 +30,8 @@ export const registerSchema = z
       .trim()
       .min(2, 'Name must be at least 2 characters')
       .max(50, 'Name must be less than 50 characters')
-      .transform((val) => val.replace(/\s+/g, ' ')) // normalize spaces
-      .refine((val) => val.trim().split(' ').length >= 1, {
+      .transform(val => val.replace(/\s+/g, ' ')) // normalize spaces
+      .refine(val => val.trim().split(' ').length >= 1, {
         message: 'Name cannot be just whitespace',
       }),
 
@@ -41,7 +41,7 @@ export const registerSchema = z
       .toLowerCase()
       .min(1, 'Email is required')
       .email('Invalid email address')
-      .refine((email) => {
+      .refine(email => {
         // Block disposable/temporary emails (optional advanced check)
         const disposableDomains = [
           'tempmail.com',
@@ -64,23 +64,26 @@ export const registerSchema = z
       .string({ message: 'Please confirm your password' })
       .min(1, 'Please confirm your password'),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ['confirmPassword'],
   })
   // Optional: Prevent common passwords (you can expand this list or use an API)
   .refine(
-    (data) =>
-      !['password', '12345678', 'qwerty123', data.email.split('@')[0]?.toLowerCase()].includes(
-        data.password.toLowerCase()
-      ),
+    data =>
+      ![
+        'password',
+        '12345678',
+        'qwerty123',
+        data.email.split('@')[0]?.toLowerCase(),
+      ].includes(data.password.toLowerCase()),
     {
       message: 'This password is too common or based on your email',
       path: ['password'],
     }
   );
 
-export type RegisterSchema = z.infer<typeof registerSchema>;
+export type TRegisterSchema = z.infer<typeof registerSchema>;
 
 export const changePasswordSchema = z
   .object({
@@ -92,19 +95,19 @@ export const changePasswordSchema = z
       .regex(passwordRegex, strongPasswordMessage),
     confirmNewPassword: z.string(),
   })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
+  .refine(data => data.newPassword === data.confirmNewPassword, {
     message: "Passwords don't match",
     path: ['confirmNewPassword'],
   })
-  .refine((data) => data.currentPassword !== data.newPassword, {
+  .refine(data => data.currentPassword !== data.newPassword, {
     message: 'New password must be different from current password',
     path: ['newPassword'],
   });
 
-export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>;
+export type TChangePasswordSchema = z.infer<typeof changePasswordSchema>;
 const otpSchema = z.object({
-  otp: z.string().length(6, "Please enter all 6 digits"),
+  otp: z.string().length(6, 'Please enter all 6 digits'),
 });
 
-type OtpFormData = z.infer<typeof otpSchema>;
-export { otpSchema, type OtpFormData };
+type TOtpFormData = z.infer<typeof otpSchema>;
+export { otpSchema, type TOtpFormData };
