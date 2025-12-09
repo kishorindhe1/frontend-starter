@@ -1,17 +1,17 @@
-import FormInput from "@/components/form/form-input";
-import { useLogin } from "@/features/auth/hooks/use-login";
+import FormInput from '@/components/form/form-input';
+import { useLogin } from '@/features/auth/hooks/use-login';
 import {
   loginSchema,
   type TLoginSchema,
-} from "@/features/auth/schemas/auth-schema";
-import { LockOutlined, LoginOutlined, MailOutlined } from "@ant-design/icons";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Card, Flex, Form, message, Space, Typography } from "antd";
-import Title from "antd/es/typography/Title";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import OtpVerificationForm from "./otp-verify";
+} from '@/features/auth/schemas/auth-schema';
+import { LockOutlined, LoginOutlined, MailOutlined } from '@ant-design/icons';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button, Card, Flex, Form, message, Space, Typography } from 'antd';
+import Title from 'antd/es/typography/Title';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import OtpVerificationForm from './otp-verify';
 
 const { Text } = Typography;
 
@@ -30,7 +30,7 @@ const LoginForm: React.FC = () => {
     formState: { errors },
   } = useForm<TLoginSchema>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: '', password: '' },
   });
 
   /**
@@ -56,7 +56,7 @@ const LoginForm: React.FC = () => {
         setLoginCredentials(data);
         setRequiresOtp(true);
         message.success(
-          responses.message || "OTP sent to your registered email."
+          responses.message || 'OTP sent to your registered email.'
         );
       }
     } catch (error: unknown) {
@@ -64,7 +64,7 @@ const LoginForm: React.FC = () => {
         (error as { response?: { data?: { message?: string } } })?.response
           ?.data?.message ||
         (error as Error)?.message ||
-        "Invalid credentials. Please try again.";
+        'Invalid credentials. Please try again.';
 
       message.error(errorMessage);
       if (
@@ -72,7 +72,7 @@ const LoginForm: React.FC = () => {
           401 ||
         (error as { response?: { status?: number } }).response?.status === 403
       ) {
-        reset({ email: data.email, password: "" });
+        reset({ email: data.email, password: '' });
       } else {
         reset({ email: data.email, password: data.password });
       }
@@ -99,13 +99,13 @@ const LoginForm: React.FC = () => {
         (error as { response?: { data?: { message?: string } } })?.response
           ?.data?.message ||
           (error as Error)?.message ||
-          "Failed to resend OTP. Please try again."
+          'Failed to resend OTP. Please try again.'
       );
     }
   };
 
   const handleOtpSuccess = () => {
-    navigate("/dashboard");
+    navigate('/dashboard');
   };
 
   return (
@@ -117,7 +117,7 @@ const LoginForm: React.FC = () => {
             onResend={handleResendOtp}
           />
         ) : (
-          <Space  direction="vertical" size="middle">
+          <Space orientation="vertical" size="middle">
             <Title level={3} className="!mb-0">
               Sign In
             </Title>
@@ -162,7 +162,7 @@ const LoginForm: React.FC = () => {
                   className="my-1"
                   icon={<LoginOutlined />}
                 >
-                  {isPending ? "Signing in..." : "Sign in"}
+                  {isPending ? 'Signing in...' : 'Sign in'}
                 </Button>
               </Form.Item>
             </Form>

@@ -9,4 +9,4 @@ const PublicRoutes: FC = () => {
   return useRoutes(routes);
 };
 
-export { PublicRoutes };
+export default PublicRoutes;
