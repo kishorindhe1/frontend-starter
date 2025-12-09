@@ -23,4 +23,13 @@ export type TLoginResponse = {
   sessionToken?: string;
   message: string;
   expiresIn: string;
-  };
+};
+
+export type TForgotPasswordPayload = {
+  email: string;
+};
+
+export type TForgotPasswordResponse = {
+  message: string;
+  // you can extend this if your backend returns more data
+};

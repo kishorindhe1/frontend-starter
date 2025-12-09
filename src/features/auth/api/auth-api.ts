@@ -1,11 +1,13 @@
-import { api } from "@/lib/api";
+import { api } from '@/lib/api';
 
 import type {
+  TForgotPasswordPayload,
+  TForgotPasswordResponse,
   TLoginOtpResponse,
   TLoginPayload,
   TLoginResponse,
   TVerifyOtpPayload,
-} from "@/features/auth/types";
+} from '@/features/auth/types';
 
 /**
  * Signs in a user with email and password.
@@ -26,7 +28,7 @@ import type {
  */
 
 export const loginRequest = (payload: TLoginPayload) =>
-  api.post<TLoginResponse>("/auth/sign-in", payload);
+  api.post<TLoginResponse>('/auth/sign-in', payload);
 
 /** Verify OTP after 2FA login */
 /**
@@ -42,4 +44,7 @@ export const loginRequest = (payload: TLoginPayload) =>
  * ```
  */
 export const verifyOtpRequest = (payload: TVerifyOtpPayload) =>
-  api.post<TLoginOtpResponse>("/auth/verify-otp", payload);
+  api.post<TLoginOtpResponse>('/auth/verify-otp', payload);
+
+export const forgotPasswordRequest = (payload: TForgotPasswordPayload) =>
+  api.post<TForgotPasswordResponse>('/auth/forgot-password', payload);

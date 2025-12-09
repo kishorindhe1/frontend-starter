@@ -1,15 +1,15 @@
-import { loginRequest } from "@/features/auth/api/auth-api";
-import type { TLoginPayload, TLoginResponse } from "@/features/auth/types";
-import type { ApiResponse } from "@/types/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { loginRequest } from '@/features/auth/api/auth-api';
+import type { TLoginPayload, TLoginResponse } from '@/features/auth/types';
+import type { TApiResponse } from '@/lib/api/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 /**
  * Custom hook for handling user login functionality.
- * 
+ *
  * This hook uses React Query's `useMutation` to manage the login process,
  * including API requests and caching the response data.
- * 
- * @returns {UseMutationResult<ApiResponse<TLoginResponse>, unknown, TLoginPayload>} 
+ *
+ * @returns {UseMutationResult<TApiResponse<TLoginResponse>, unknown, TLoginPayload>}
  * A mutation object that includes:
  * - `mutate`: Function to trigger the login request
  * - `mutateAsync`: Async version of mutate
@@ -18,11 +18,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
  * - `isLoading`: Boolean indicating if the mutation is in progress
  * - `isSuccess`: Boolean indicating if the mutation was successful
  * - `isError`: Boolean indicating if the mutation failed
- * 
+ *
  * @example
  * ```typescript
  * const { mutate, isLoading } = useLogin();
- * 
+ *
  * const handleLogin = (credentials: TLoginPayload) => {
  *   mutate(credentials, {
  *     onSuccess: (data) => {
@@ -36,15 +36,16 @@ export const useLogin = () => {
   const queryClient = useQueryClient();
 
   return useMutation<
-    ApiResponse<TLoginResponse>,               // response type
-    unknown,                                   // error type
-    TLoginPayload                               // payload type
+    TApiResponse<TLoginResponse>, // response type
+    unknown, // error type
+    TLoginPayload // payload type
   >({
-    mutationKey: ["login-temp-data"],
-    mutationFn: (payload) => loginRequest(payload) as Promise<ApiResponse<TLoginResponse>>,
+    mutationKey: ['login-temp-data'],
+    mutationFn: payload =>
+      loginRequest(payload) as Promise<TApiResponse<TLoginResponse>>,
 
-    onSuccess: (data) => {
-      queryClient.setQueryData(["login-temp-data"], data.data);
+    onSuccess: data => {
+      queryClient.setQueryData(['login-temp-data'], data.data);
     },
   });
 };

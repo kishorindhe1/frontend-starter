@@ -82,7 +82,7 @@ const LoginForm: React.FC = () => {
   };
 
   const handleResetPassword = () => {
-    navigate('/reset-password'); // Redirect to a reset password page
+    navigate('/forgot-password'); // Redirect to a reset password page
   };
 
   return (
@@ -144,17 +144,19 @@ const LoginForm: React.FC = () => {
               </Form.Item>
 
               <Text className="block mt-2 text-left">
-                <Link onClick={handleResetPassword}>Forgot Password?</Link>
+                <Link onClick={handleResetPassword} strong>
+                  Forgot Password?
+                </Link>
               </Text>
             </Form>
 
             <Text type="secondary" className="text-center mt-4">
               By signing in, you agree to our{' '}
-              <Link href="/privacy-policy" target="_blank">
+              <Link href="/privacy-policy" target="_blank" strong>
                 Privacy Policy
               </Link>{' '}
               and{' '}
-              <Link href="/terms-of-service" target="_blank">
+              <Link href="/terms-of-service" target="_blank" strong>
                 Terms of Service
               </Link>
               .
