@@ -10,7 +10,7 @@ interface IThemeState {
   setTheme: (theme: TTheme) => void;
 }
 
-const applyThemeToHtml = (isDark: boolean) => {
+const applyThemeToHtml = (isDark: boolean): void => {
   document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
   document.documentElement.classList.toggle('dark', isDark);
   document.documentElement.classList.toggle('light', !isDark);
@@ -25,7 +25,7 @@ export const useThemeStore = create<IThemeState>()(
           ? window.matchMedia('(prefers-color-scheme: dark)').matches
           : false,
 
-      setTheme: (theme: TTheme) => {
+      setTheme: (theme: TTheme): void => {
         const isDark =
           theme === 'dark'
             ? true
@@ -39,10 +39,12 @@ export const useThemeStore = create<IThemeState>()(
     }),
     {
       name: 'theme-preference',
-      onRehydrateStorage: () => state => {
-        // This runs after hydration — re-apply just in case
-        if (state) applyThemeToHtml(state.isDark);
-      },
+      onRehydrateStorage:
+        () =>
+        (state): void => {
+          // This runs after hydration — re-apply just in case
+          if (state) applyThemeToHtml(state.isDark);
+        },
     }
   )
 );

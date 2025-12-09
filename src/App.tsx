@@ -1,11 +1,11 @@
 import { StyleProvider } from '@ant-design/cssinjs';
 import { Button, ConfigProvider } from 'antd';
-import { Suspense } from 'react';
+import { Suspense, type FC } from 'react';
 import { PublicRoutes } from '@/routes';
 import { darkTheme, lightTheme } from '@/theme';
 import { useThemeStore } from '@/store';
 
-function ThemeToggle() {
+const ThemeToggle: FC = () => {
   const { isDark, theme, setTheme } = useThemeStore();
 
   return (
@@ -19,9 +19,9 @@ function ThemeToggle() {
       </Button>
     </div>
   );
-}
+};
 
-function App() {
+const App: FC = () => {
   const { isDark } = useThemeStore();
   return (
     <ConfigProvider theme={isDark ? darkTheme : lightTheme}>
@@ -37,6 +37,6 @@ function App() {
       </StyleProvider>
     </ConfigProvider>
   );
-}
+};
 
 export default App;

@@ -44,6 +44,7 @@ export default tses.config(
           prefix: ['I'],
         },
       ],
+
       'id-denylist': [
         'error',
         'temp',

@@ -73,28 +73,37 @@ const handleResponse = <T>(
  * ```
  */
 const api = {
-  get: <T = unknown>(url: string, config?: AxiosRequestConfig) =>
+  get: <T = unknown>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<TApiResponse<T>> =>
     client.get<TApiResponse<T>>(url, config).then(handleResponse),
 
   post: <T = unknown>(
     url: string,
     payload?: unknown,
     config?: AxiosRequestConfig
-  ) => client.post<TApiResponse<T>>(url, payload, config).then(handleResponse),
+  ): Promise<TApiResponse<T>> =>
+    client.post<TApiResponse<T>>(url, payload, config).then(handleResponse),
 
   put: <T = unknown>(
     url: string,
     payload?: unknown,
     config?: AxiosRequestConfig
-  ) => client.put<TApiResponse<T>>(url, payload, config).then(handleResponse),
+  ): Promise<TApiResponse<T>> =>
+    client.put<TApiResponse<T>>(url, payload, config).then(handleResponse),
 
   patch: <T = unknown>(
     url: string,
     payload?: unknown,
     config?: AxiosRequestConfig
-  ) => client.patch<TApiResponse<T>>(url, payload, config).then(handleResponse),
+  ): Promise<TApiResponse<T>> =>
+    client.patch<TApiResponse<T>>(url, payload, config).then(handleResponse),
 
-  delete: <T = unknown>(url: string, config?: AxiosRequestConfig) =>
+  delete: <T = unknown>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<TApiResponse<T>> =>
     client.delete<TApiResponse<T>>(url, config).then(handleResponse),
 } satisfies TApiClient;
 
